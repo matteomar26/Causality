@@ -1,0 +1,835 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Tracking the evolution of an epidemic is an interesting possibility to control
+ it.
+ Starting from the observations (i.e.
+ the clinical tests) performed on the population, the goal is to obtain
+ an estimate of the epidemic risk, namely the probability for each individual
+ to be infected in function of time.
+\end_layout
+
+\begin_layout Subsection
+Some models
+\end_layout
+
+\begin_layout Standard
+Here we are going to introduce some diffused models in literature.
+ Typically, although the epidemic process is by nature a continuous process
+ in time, the dynamics is discretized.
+ This is because many inferential methods are only able to address jdiscrete
+ time process inference.
+ For this reason we are going to introduce the SI model first in its discrete
+ time form.
+ The discrete SI model is also introduced for its semplicity.
+ It is very easy to introduce and it includes many of the most important
+ features of the epidemic inference.
+ It can also be used, therefore, in order to give examples.
+ However, since Causality is able to infere directly from the continuous
+ model, we are also going to introduce the continuous dynamics.
+\end_layout
+
+\begin_layout Subsubsection*
+Discretized SI Model
+\end_layout
+
+\begin_layout Standard
+The simplest epidemic model is a two states model in which each particle
+ is either S (susceptible) or I (infected).
+ At the initial time, there is a zero patient in the state I.
+ All the other particles are in the state S.
+ As time passes, the zero patient tries to infect one or more of its contacts
+ with an infection probability 
+\begin_inset Formula $\lambda$
+\end_inset
+
+.
+ They, in turn, start to infect their contacts.
+ In this model an I particle never comes back to the S state: the transition
+ 
+\begin_inset Formula $I\to S$
+\end_inset
+
+ is forbidden.
+ Let us call 
+\begin_inset Formula $x_{i}^{t}$
+\end_inset
+
+ the state of particle 
+\begin_inset Formula $i$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ Therefore 
+\begin_inset Formula $x_{i}^{t}$
+\end_inset
+
+ can be either 
+\begin_inset Formula $S$
+\end_inset
+
+ or 
+\begin_inset Formula $I$
+\end_inset
+
+.
+ Since the transition 
+\begin_inset Formula $I\to S$
+\end_inset
+
+ is forbidden, 
+\begin_inset Formula $p(x_{i}^{t+1}=S|x_{i}^{t}=I)=0$
+\end_inset
+
+ and 
+\begin_inset Formula $p(x_{i}^{t+1}=I|x_{i}^{t}=I)=1$
+\end_inset
+
+.
+ The probability of generating a particular trajectory 
+\begin_inset Formula $x$
+\end_inset
+
+ is:
+\begin_inset Formula 
+\[
+P\left(\mathbf{x}\right)=\prod_{i=1}^{N}p_{i}^{0}(x_{i}^{0})\prod_{t=0}^{T-1}p_{i}^{t+1}\left(x_{i}^{t+1}|x_{i}^{t},x_{\partial i}^{t}\right)
+\]
+
+\end_inset
+
+This equation is just the product over time of the transition probabilities
+ multiplicated by the initial time probability:
+\begin_inset Formula 
+\[
+P\left(\mathbf{x}\right)=P^{0}(x^{0})\prod_{t=0}^{T-1}P^{t+1}\left(x^{t+1}|x^{t}\right)
+\]
+
+\end_inset
+
+which factorizes over the particles provided that the neighbors' state st
+ the previous time is provided.
+ The transition probabilities of a particle depend indeed also on the state
+ of its contacts.
+ Defining 
+\begin_inset Formula $\lambda_{ij}^{t}$
+\end_inset
+
+ as the probability for 
+\begin_inset Formula $i$
+\end_inset
+
+ to infect 
+\begin_inset Formula $j$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ provided that 
+\begin_inset Formula $x_{i}^{t}=I$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{j}^{t}=S$
+\end_inset
+
+, it is easy to write the transition probabilities:
+\begin_inset Formula 
+\[
+p_{i}^{t+1}\left(x_{i}^{t+1}=S|x_{i}^{t}=S,x_{\partial i}^{t}\right)=\prod_{j\in\partial i}\left(1-\lambda_{ji}^{t}\delta_{x_{j}^{t},I}\right)
+\]
+
+\end_inset
+
+The transition 
+\begin_inset Formula $S\to I$
+\end_inset
+
+ is obtained by normalization and the transitions 
+\begin_inset Formula $I\to S$
+\end_inset
+
+ and 
+\begin_inset Formula $I\to I$
+\end_inset
+
+ are described above.
+ As a consequence the probability to generate a particular 
+\begin_inset Formula $x$
+\end_inset
+
+ is the product of the probabilities of being the zero patient 
+\begin_inset Formula $p_{i}(x_{i}^{0})$
+\end_inset
+
+ multiplicated by the product over time and particles of the transition
+ probabilities.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+SI Model
+\end_layout
+
+\begin_layout Standard
+As already discussed, the epidemic models are for their nature continuous
+ in time.
+ Their discretizations is done to simplify them and to make simpler examples.
+ Since our method does not need this semplification in order to work, we
+ will not approximate the continuous dynamics with a discrete one.
+ For this reason we are now going to introduce the SI model in its continuous
+ form.
+ In this case it is not possbile to use the single time states 
+\begin_inset Formula $x_{i}^{t}$
+\end_inset
+
+ to write the global probability.
+ We then simply change variables by introducing the infection time 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+ for every particle 
+\begin_inset Formula $i=1,\dots,N$
+\end_inset
+
+.
+ Consequently:
+\begin_inset Formula 
+\[
+x_{i}^{t}=\begin{cases}
+S & t<t_{i}\\
+I & t\geq t_{i}
+\end{cases}
+\]
+
+\end_inset
+
+(note that this change of variables can be done also in the discretized
+ case).
+ Thus, the complete dynamics is specified by providing every 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+ for each 
+\begin_inset Formula $i=1,\dots,N$
+\end_inset
+
+.
+ In the continuous case, 
+\begin_inset Formula $\lambda_{ij}^{t}$
+\end_inset
+
+ is the rate of infection from 
+\begin_inset Formula $i$
+\end_inset
+
+ to 
+\begin_inset Formula $j$
+\end_inset
+
+ at time 
+\begin_inset Formula $t$
+\end_inset
+
+ provided that 
+\begin_inset Formula $t_{i}\leq t$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{j}>t$
+\end_inset
+
+.
+ Let us define 
+\begin_inset Formula $y:=\left(t_{1},\dots,t_{N}\right)$
+\end_inset
+
+ as the trajectory vector made of all the infection times 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+ of each particle 
+\begin_inset Formula $i=1,\dots,N$
+\end_inset
+
+.
+ The probability denisty of generating a particular trajectory 
+\begin_inset Formula $y=\left(t_{1},\dots,t_{N}\right)$
+\end_inset
+
+ is:
+\begin_inset Formula 
+\begin{equation}
+P(y)=\prod_{i}p_{0}^{i}(t_{i})\left(\frac{d}{d\epsilon}\prod_{j\in\partial i}\exp\left\{ -\intop_{t_{j}}^{t_{i}-\epsilon}\lambda_{ji}^{t}\mathrm{d}t\right\} \bigg|_{\epsilon=0}\right)\label{eq:Intro:SI_continuous}
+\end{equation}
+
+\end_inset
+
+This formula can be obtained by the discrete case by changing the variables
+ from 
+\begin_inset Formula $x$
+\end_inset
+
+ to 
+\begin_inset Formula $y$
+\end_inset
+
+ and by substituting the transition probabilities: 
+\begin_inset Formula 
+\begin{align*}
+P\left(\mathbf{y}\right) & =\prod_{i=1}^{N}p_{i}^{0}(t_{i})\left(\prod_{t=0}^{t_{i}-2}\prod_{j\in\partial i}\left(1-\lambda_{ji}^{t}\theta\left(t-t_{j}\right)\right)\right)\left(1-\prod_{j\in\partial i}\left(1-\lambda_{ji}^{t_{i}-1}\theta\left(t_{i}-1-t_{j}\right)\right)\right)
+\end{align*}
+
+\end_inset
+
+which is equal, by distributing the product, to:
+\begin_inset Formula 
+\begin{align*}
+P\left(\mathbf{y}\right) & =\prod_{i=1}^{N}p_{i}^{0}(t_{i})\left(\prod_{t=0}^{t_{i}-2}\prod_{j\in\partial i}\left(1-\lambda_{ji}^{t}\theta\left(t-t_{j}\right)\right)-\prod_{t=0}^{t_{i}-1}\prod_{j\in\partial i}\left(1-\lambda_{ji}^{t}\theta\left(t-t_{j}\right)\right)\right).
+\end{align*}
+
+\end_inset
+
+This formula is interpretable as:
+\begin_inset Formula 
+\[
+P\left(\mathbf{y}\right)=\prod_{i=1}^{N}p_{i}^{0}(t_{i})\left(\text{P(NO infection until }t_{i}-2)-\text{P(NO infection until }t_{i}-1)\right).
+\]
+
+\end_inset
+
+That difference is of just the probability for 
+\begin_inset Formula $i$
+\end_inset
+
+ to recieve the infection at time 
+\begin_inset Formula $t_{i}-1$
+\end_inset
+
+ from its neighbours and consequently to become infect at time 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+.
+ By passing to continuous time, the probability density is therefore:
+\begin_inset Formula 
+\[
+P\left(y\right)=\prod_{i=1}^{N}p_{i}^{0}(t_{i})\lim_{\epsilon\to0}\frac{\prod_{j\in\partial i}\exp\left\{ -\intop_{t_{j}}^{t_{i}-\epsilon}\lambda_{ji}^{t}\mathrm{d}t\right\} -\prod_{j\in\partial i}\exp\left\{ -\intop_{t_{j}}^{t_{i}}\lambda_{ji}^{t}\mathrm{d}t\right\} }{\epsilon}.
+\]
+
+\end_inset
+
+This is exactly the same formula as before but with continuous time.
+ This formula coincides with 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Intro:SI_continuous"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Notice that 
+\begin_inset Formula $\lambda_{ji}^{t}$
+\end_inset
+
+ in general is not only dermined by the contact graph, but also by the dynamics.
+ For example, 
+\begin_inset Formula $\lambda_{ji}^{t}$
+\end_inset
+
+ typically depends on the infection time of 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ For 
+\begin_inset Formula $t<t_{j}\,$
+\end_inset
+
+, 
+\begin_inset Formula $\lambda_{ji}^{t}\,$
+\end_inset
+
+ is equal to 0.
+ For 
+\begin_inset Formula $t>t_{j}$
+\end_inset
+
+ we expect 
+\begin_inset Formula $\lambda_{ji}^{t}$
+\end_inset
+
+ to grow for some days and then to diminish and reach 0, since the infectinvenes
+s needs some time to develop and then reduces in time.
+ This example gives us the possibility to notice a first hidden difficulty
+ in inference: all the 
+\begin_inset Formula $\{\lambda_{ji}^{t}\}$
+\end_inset
+
+ coefficients determine the dynamics, hence the configurations 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ However, their values are dynamics dependent.
+ This causes no problem when we simulate the dynamics: a zero patient is
+ initialized and every time it infects a new particle it is possible to
+ determine the 
+\begin_inset Formula $\lambda_{ji}^{t}$
+\end_inset
+
+ that we need to infect new particles.
+ However, when we try to 
+\series bold
+infere 
+\series default
+the dynamics, we have no clue on how the epidemics has spread.
+ So we find a first nontrivial difficulty: the infection rates both 
+\series bold
+determine
+\series default
+ and 
+\series bold
+are determined
+\series default
+ by the dynamics.
+ This is only one of the difficulties that are not present when generating
+ the dynamics and only arise in the inferece.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+SEIR Model
+\end_layout
+
+\begin_layout Standard
+The Susceptive(S) Exposed(E) Infected(I) Recovered(R) model is a slightly
+ more general model than the SI.
+ Here we have four states.
+ A particle S can be infected.
+ In that case it becomes E.
+ In this state the particle is not able to infect any contact.
+ After a random time it becomes I.
+ In the state I the particle is able to infect.
+ After another random delay it becomes R.
+ In this state the particle is not able to infect or to be infected.
+ Notice that also in this model the particle can not be I in two different
+ periods.
+ In fact, the only allowed transitions are 
+\begin_inset Formula $S\to E$
+\end_inset
+
+, 
+\begin_inset Formula $E\to I$
+\end_inset
+
+, 
+\begin_inset Formula $I\to R$
+\end_inset
+
+.
+ Notice that this model is not particularly more general than the SI model:
+ indeed, if we take an SI model with 
+\begin_inset Formula $\lambda_{ij}^{t}$
+\end_inset
+
+ dependent on 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+ such that 
+\begin_inset Formula $\lambda_{ij}^{t}$
+\end_inset
+
+ is 
+\begin_inset Formula $0$
+\end_inset
+
+ for 
+\begin_inset Formula $t\leq t_{i}$
+\end_inset
+
+ and has a gaussian-like shape for 
+\begin_inset Formula $t>t_{i}$
+\end_inset
+
+ with mean 
+\begin_inset Formula $t_{i}+t^{*}$
+\end_inset
+
+, it means that the particle is not immediately infectious (an equivalent
+ of the E state).
+ Than it becomes infectious (equivalent of I state) and finally, for 
+\begin_inset Formula $t>>t^{*}$
+\end_inset
+
+, 
+\begin_inset Formula $\lambda_{ij}^{t}\approx0$
+\end_inset
+
+ so that the particle is not infectious (equivalent of the R state).
+ We write here the global density probability function directly in the continuou
+s formalism.
+ In this model the trajectory of the epidemics is fully specified by providing
+ for each particle 
+\series bold
+three
+\series default
+ times: 
+\begin_inset Formula $t_{i}^{E},t_{i}^{I},t_{i}^{R}$
+\end_inset
+
+ which are respectively the times in which particle 
+\begin_inset Formula $i$
+\end_inset
+
+ becomes E, I and R.
+ For a zero patient we have 
+\begin_inset Formula $t_{i}^{E}=t_{i}^{I}=0$
+\end_inset
+
+.
+ In general: 
+\begin_inset Formula $t_{i}^{E}\leq t_{i}^{I}\leq t_{i}^{R}.$
+\end_inset
+
+ Calling 
+\begin_inset Formula $y=\left\{ (t_{i}^{E},t_{i}^{I},t_{i}^{R})\right\} _{i=1}^{N}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+P(y)=\prod_{i=1}^{N}\left(\frac{d}{d\epsilon}\prod_{j}e^{-\intop_{t_{j}^{I}}^{t_{i}^{E}-\epsilon}\lambda_{ji}^{t}\,dt}\bigg|_{\epsilon=0}\right)\nu_{i}^{t_{i}^{I}}\mu_{i}^{t_{i}^{R}}\,\exp\left[-\intop_{t_{i}^{E}}^{t_{i}^{I}}\nu_{i}^{t}dt-\intop_{t_{i}^{I}}^{t_{i}^{R}}\mu_{i}^{t}dt\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Causality Breaking
+\end_layout
+
+\begin_layout Standard
+Inferring the epidemic risk of an individual from the observations is a
+ hard problem.
+ The main reason is due to 
+\series bold
+causality breaking
+\series default
+, namely the phenomenon in which the marginals at a certain time 
+\begin_inset Formula $t$
+\end_inset
+
+ also depend on future times 
+\begin_inset Formula $t'>t$
+\end_inset
+
+, even if the generative model is causal.
+ Causality breaking arises from observations.
+ Let us give an example in order to better explain this crucial point.
+ We consider a population of three interacting individuals A, B and C.
+ We introduce, for each individual, the marginal 
+\begin_inset Formula $p_{i}(t)$
+\end_inset
+
+ which is the probability for 
+\begin_inset Formula $i$
+\end_inset
+
+ to be infected at time 
+\begin_inset Formula $t$
+\end_inset
+
+, for 
+\begin_inset Formula $i=\text{A,B,C}$
+\end_inset
+
+.
+ If no observation is done on the system, the marginals are connected only
+ to the past in a ferromagnetic way.
+ This means that, for example, the 
+\begin_inset Formula $p_{A}(t)$
+\end_inset
+
+ can be influenced only by 
+\begin_inset Formula $p_{A}(t'<t)$
+\end_inset
+
+ which is the past story of 
+\begin_inset Formula $A$
+\end_inset
+
+ and by the 
+\begin_inset Formula $p_{B,C}(t'<t)$
+\end_inset
+
+ which is the effect that B and C have had over A in time.
+ If we increase 
+\begin_inset Formula $p_{B}(s)$
+\end_inset
+
+, than 
+\begin_inset Formula $p_{A}(t>s)$
+\end_inset
+
+ is increased.
+ This is very intuitive.
+ If 
+\begin_inset Formula $B$
+\end_inset
+
+ is more probable to be infected at a certain time, it will infect 
+\begin_inset Formula $A$
+\end_inset
+
+ with higher probability.
+ Consequently, 
+\begin_inset Formula $p_{A}(t>s)$
+\end_inset
+
+ is increased too.
+ However, as soon as an observation is performed on the system, many non
+ trivial effects arise.
+ For example, let us suppose to observe the particle A to be S at time 0.
+ Then we observe that A is I at time T.
+ It means that either B or C have infected A in the time interval [0,T].
+ In this case 
+\begin_inset Formula $p_{B}(t)$
+\end_inset
+
+ strongly depends on 
+\begin_inset Formula $p_{C}(t'>t)$
+\end_inset
+
+.
+ In fact, for example, if 
+\begin_inset Formula $p_{C}(s<\approx T)$
+\end_inset
+
+ is very low, it means that 
+\begin_inset Formula $p_{B}(t<s)$
+\end_inset
+
+ is very high! In the limit 
+\begin_inset Formula $p_{C}(T)=0$
+\end_inset
+
+ indeed, the zero patient is necessairily 
+\begin_inset Formula $B$
+\end_inset
+
+ and this means that 
+\begin_inset Formula $p_{B}(t)=1$
+\end_inset
+
+ for every 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ We see that the marginals of 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ are connected at every time.
+ Moreover, we observe a sort of antiferromagnetic behaviour (which is not
+ present in the generating dynamics!): 
+\begin_inset Formula $p_{B}(t)$
+\end_inset
+
+ must be high if 
+\begin_inset Formula $p_{c}(s>t)$
+\end_inset
+
+ is low.
+ 
+\end_layout
+
+\begin_layout Subsection
+Generating vs Inferencial model
+\end_layout
+
+\begin_layout Standard
+The example above is useful to understand that inferring a causal dynamics
+ requires taking into account non causal effects.
+ Even the physics behind the Inferential process might be richer that the
+ one of the generating dynamics.
+ This makes the inferential problem very hard, since it is necessary to
+ define a more general model that is able to catch the features of the generatin
+g dynamics and to correct them with the non causal effects due to observations.
+ 
+\end_layout
+
+\begin_layout Subsection
+Lavori affini
+\end_layout
+
+\begin_layout Standard
+This paper is aimed at contibuting in the field of automatic tracking of
+ an epidemics.
+ We do so by introducing a new method for inference of Stochastic Processes
+ called Causality.
+ 
+\end_layout
+
+\begin_layout Section
+Can we solve it with a MC??
+\end_layout
+
+\begin_layout Standard
+giov ci illuminerà
+\end_layout
+
+\begin_layout Section
+The Causality ansatz
+\end_layout
+
+\begin_layout Standard
+The idea of Causality is to infere the epidemic process by introducing an
+ inferencial model which is formally very similar to the generating model.
+ In partiular, the idea is to impose the inferencial model to be 
+\series bold
+causal.
+ 
+\series default
+The functional form of the probability distribution is very similar to the
+ generating model, but the parameters of the functions are inferred.
+ This makes causality technique very flexible, since the ansats is built
+ directly by slightly modifying the generating model.
+ Another advantage is the interpretability of the inferred model.
+ Causality inference, in fact, can be interpreted as the best causal model
+ inferring the observations.
+ By looking at some examples this is made clearer
+\end_layout
+
+\begin_layout Subsection
+SI model
+\end_layout
+
+\begin_layout Standard
+qui mettiamo SI
+\end_layout
+
+\begin_layout Subsection
+SEIR (continuo)
+\end_layout
+
+\begin_layout Standard
+non ci sarà tanto da aggiungere rispetto a SI
+\end_layout
+
+\begin_layout Subsection
+Metapop o SIS
+\end_layout
+
+\begin_layout Standard
+lo faremo? boh magari nel preprint non lo mettiamo e lo mettiamo dopo? Vabbè
+ io per ora lo metto poi in caso lo leviamo.
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+Qui mettiamo sia qualche roc che il loop sui tedeschi (se vogliamo mettere
+ il loop)
+\end_layout
+
+\end_body
+\end_document
